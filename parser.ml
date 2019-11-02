@@ -27,6 +27,7 @@ let rec parse sexp = match sexp with
     | List([Atom("sub1"); arg]) -> EPrim1(Sub1, parse arg)
     | List([Atom("isNum"); arg]) -> EPrim1(IsNum, parse arg)
     | List([Atom("isBool"); arg]) -> EPrim1(IsBool, parse arg)
+    | List([Atom("print"); arg]) -> EPrim1(Print, parse arg)
     | List([Atom("+"); arg1; arg2]) -> EPrim2(Plus, parse arg1, parse arg2)
     | List([Atom("-"); arg1; arg2]) -> EPrim2(Minus, parse arg1, parse arg2)
     | List([Atom("*"); arg1; arg2]) -> EPrim2(Times, parse arg1, parse arg2)
@@ -40,6 +41,7 @@ let rec parse sexp = match sexp with
                                         let bod = List.map parse rest in 
                                         ELet(binds, bod))
       | Atom("while")::arg1::rest -> EWhile(parse arg1, List.map parse rest)
+      | Atom(s)::rest -> EApp(s, List.map parse rest)
       | _ -> failwith "Invalid" )
 and parse_binding binding = match binding with 
   | List([Atom(name); arg]) -> if (check_reserved name reserved_words) then failwith "Invalid" else (name, parse arg)
@@ -54,8 +56,22 @@ and string_toBool name list = match list with
   | head::tail -> if (head = name) then true else false
   | _ -> failwith "boolean creation messed up"
 
-let parse_def sexp =
-  (* TODO *) failwith "Not yet implemented"
+let rec parse_def sexp = match sexp with 
+  | List(a) -> (match a with 
+    | Atom("def")::Atom(s)::List(parm)::Atom(":")::Atom(ret)::rest -> let parm' = parse_type parm [] in
+                                                                     let ret' = check_type ret in 
+                                                                     if rest = [] 
+                                                                     then failwith "Invalid"
+                                                                     else let exp' = List.map parse rest in 
+                                                                     DFun(s, parm', ret', exp')
+    | _ -> failwith "Invalid")
+  | _ -> failwith "Invalid"
+and parse_type parm l = match parm with 
+  | Atom(s)::Atom(":")::Atom(t)::rest -> parse_type rest [(s, check_type t)]@l
+  | [] -> l
+  | _ -> failwith "Invalid"
+and check_type t = if t = "Num" then TNum else 
+                  (if t = "Bool" then TBool else failwith "Invalid")
 
 let rec parse_program sexps =
   match sexps with

@@ -1,0 +1,2 @@
+(def remainder (input1 : Num input2 : Num) : Num
+    if (< (- input1 input2) 0) (print input1) (remainder (- input1 input2))) 

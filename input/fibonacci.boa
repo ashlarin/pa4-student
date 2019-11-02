@@ -1,0 +1,2 @@
+(def fibonacci (input : Num) : Num 
+    (if (< input 2) 1 (+ fibonacci (- input 1) fibonacci (- input 2)))) ["6"]

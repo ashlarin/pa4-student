@@ -99,6 +99,8 @@ let suite =
    t_i "inputTest" "(add1 input)" "6" ["5"];
   ] @ testFailList
   @ MyTests.myTestList
+  @ testFailList
+  @ input_tests
 
 let () =
   run_test_tt_main suite
