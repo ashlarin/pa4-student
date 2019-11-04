@@ -41,7 +41,11 @@ let rec parse sexp = match sexp with
                                         let bod = List.map parse rest in 
                                         ELet(binds, bod))
       | Atom("while")::arg1::rest -> EWhile(parse arg1, List.map parse rest)
-      | Atom(s)::rest -> EApp(s, List.map parse rest)
+      | Atom(s)::rest -> (if (Str.string_match valid_id_regex s 0)
+                          then (if check_reserved s reserved_words
+                                then failwith "Invalid"
+                                else EApp(s, List.map parse rest))
+                          else failwith "Invalid")
       | _ -> failwith "Invalid" )
 and parse_binding binding = match binding with 
   | List([Atom(name); arg]) -> if (check_reserved name reserved_words) then failwith "Invalid" else (name, parse arg)
@@ -58,16 +62,24 @@ and string_toBool name list = match list with
 
 let rec parse_def sexp = match sexp with 
   | List(a) -> (match a with 
-    | Atom("def")::Atom(s)::List(parm)::Atom(":")::Atom(ret)::rest -> let parm' = parse_type parm [] in
-                                                                     let ret' = check_type ret in 
-                                                                     if rest = [] 
-                                                                     then failwith "Invalid"
-                                                                     else let exp' = List.map parse rest in 
-                                                                     DFun(s, parm', ret', exp')
+    | Atom("def")::Atom(s)::List(parm)::Atom(":")::Atom(ret)::rest -> ((if (Str.string_match valid_id_regex s 0)
+                                                                        then (if check_reserved s reserved_words
+                                                                              then failwith "Invalid"
+                                                                              else let parm' = parse_type parm [] in
+                                                                                   let ret' = check_type ret in 
+                                                                                   if rest = [] 
+                                                                                   then failwith "Invalid"
+                                                                                   else let exp' = List.map parse rest in 
+                                                                                   DFun(s, parm', ret', exp'))
+                                                                        else failwith "Invalid"))
     | _ -> failwith "Invalid")
   | _ -> failwith "Invalid"
 and parse_type parm l = match parm with 
-  | Atom(s)::Atom(":")::Atom(t)::rest -> parse_type rest [(s, check_type t)]@l
+  | Atom(s)::Atom(":")::Atom(t)::rest -> ((if (Str.string_match valid_id_regex s 0)
+                                           then (if check_reserved s reserved_words
+                                                 then failwith "Invalid"
+                                                 else parse_type rest [(s, check_type t)]@l)
+                                           else failwith "Invalid"))
   | [] -> l
   | _ -> failwith "Invalid"
 and check_type t = if t = "Num" then TNum else 

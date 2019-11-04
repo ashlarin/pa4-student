@@ -58,8 +58,8 @@ let myTestList =
     t "greatF" "(> 1 5)" "false";
     t_err "letdup" "(let ((x 1) (x 2)) x)" "Multiple bindings for variable identifier x";
     t_err "unbound" "(let ((x 5)) (add1 y))" "Variable identifier y unbound";  
-    t "print" "(print 5)" "5";
-    t "print0" "(print (+ 5 9))" "14";
+    t "print" "(print 5)" "5\n5";
+    t "print0" "(print (+ 5 9))" "14\n14";
   ]
 ;;
 

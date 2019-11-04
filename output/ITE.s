@@ -22,14 +22,14 @@ push rbx
 
   mov rax, 0x2
   cmp rax, 0x2
-  jne near temp_else_branch_9
+  jne near temp_else_branch_3
   mov rax, 7
-  jmp near temp_end_of_if_10
-temp_else_branch_9:
+  jmp near temp_end_of_if_4
+temp_else_branch_3:
   cmp rax, 0
   jne near expected_bool
   mov rax, 9
-temp_end_of_if_10:
+temp_end_of_if_4:
   pop rbx
 ret
 

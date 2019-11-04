@@ -32,12 +32,12 @@ push rbx
   je near expected_num
   mov rax, [rsp -16]
   cmp rax, [rsp -24]
-  jg near temp_true_branch_5
+  jg near temp_true_branch_11
   mov rax, 0
-  jmp near temp_end_equals_6
-temp_true_branch_5:
+  jmp near temp_end_equals_12
+temp_true_branch_11:
   mov rax, 0x2
-temp_end_equals_6:
+temp_end_equals_12:
   pop rbx
 ret
 

@@ -111,6 +111,9 @@ let rec compile_expr (e : expr) (si : int) (env : (string * int) list) def_env: 
                        @ [IJmp(start_while)]
                        @ [ILabel(end_while)]
                        @ [IMov(Reg(RAX), false_const)]
+  | EApp(name, exps) -> (match find_def def_env name with 
+    | None -> failwith "Unbound"
+    | Some(DFun(name, args, ret, body)) -> failwith "Not yet implemented")
 and compile_prim1 op e si env def_env = let args_expr = compile_expr e si env def_env in
   let expr = e in 
   let check = [IAnd((Reg(RAX)), Const(1))] @ [ICmp(Reg(RAX), Const(0))] @ [IJe("expected_num")] in 
@@ -129,11 +132,14 @@ and compile_prim1 op e si env def_env = let args_expr = compile_expr e si env de
   | IsBool -> (match expr with 
     | EBool(_) -> [IMov(Reg(RAX), true_const)]
     | _ -> [IMov(Reg(RAX), false_const)])
-  | Print -> args_expr @ [IMov(Reg(RDI), Reg(RAX))]
-            @ [IMov((stackloc si), Reg(RSP))]
-            @ [ISub(Reg(RSP), Const(8))]
+  | Print -> args_expr
+            @ [IMov(Reg(RDI), Reg(RAX))]
+            @ [IMov(stackloc si, Reg(RAX))]
+            @ [IMov(stackloc (si+1), Reg(RSP))]
+            @ [ISub(Reg(RSP), Const(16))]
             @ [ICall("print")]
-            @ [IMov(Reg(RSP), (stackloc si))]
+            @ [IMov(Reg(RSP), (stackloc (si+1)))]
+            @ [IMov(Reg(RAX), (stackloc si))]
 and compile_prim2 op e1 e2 si env def_env = let args1 = compile_expr e1 si env def_env in 
   let args2 = compile_expr e2 (si+1) env def_env in 
   let check = [IAnd((Reg(RAX)), Const(1))] @ [ICmp(Reg(RAX), Const(0))] @ [IJe("expected_num")] in
@@ -198,8 +204,13 @@ and compile_prim2 op e1 e2 si env def_env = let args1 = compile_expr e1 si env d
             @ [IMov(Reg(RAX), false_const)]
             @ [ILabel(end_equals)]
 and compile_def (DFun(name, args, ret, body)) def_env =
-  (* TODO *)
-  failwith "Not yet implemented"
+  let (env, si) = List.fold_left compile_args ([], 2) args in  
+  let (instr', env', si', def_env') = (List.fold_left compile_bod ([], env, si, def_env) body) in 
+  [ILabel(name)]
+  @ instr'
+  @ [IRet]
+and compile_args (env, si) args = match args with 
+  | (s, _) -> ((s, si)::env, si+1)
 and bindings (instr, env, si, def_env) l = match l with
                                   | (n, v) -> let value = compile_expr v si env def_env in 
                                               let store = [IMov((stackloc si), Reg(RAX))] in

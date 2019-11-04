@@ -40,7 +40,6 @@ void error(int64_t error_code) {
   else if (error_code == 31){ //31: overflow from op
     fprintf(stderr, "overflow");
   }
-    
   exit(1);
 }
 

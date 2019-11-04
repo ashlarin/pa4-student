@@ -36,10 +36,12 @@ push rbx
   add rax, [rsp -16]
   jo near overflow
   mov rdi, rax
-  mov [rsp -16], rsp
-  sub rsp, 8
+  mov [rsp -16], rax
+  mov [rsp -24], rsp
+  sub rsp, 16
   call print
-  mov rsp, [rsp -16]
+  mov rsp, [rsp -24]
+  mov rax, [rsp -16]
   pop rbx
 ret
 
