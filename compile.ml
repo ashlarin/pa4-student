@@ -52,16 +52,16 @@ and check_body list exp env = match exp with
   | [] -> list
   | head::tail -> check_body (list@(well_formed_e head env)) tail env
 
-let rec well_formed_def (DFun(name, args, ret, body)) = check_parms args []
+let rec well_formed_prog (defs, main) =
+  (check_funs defs []) @ (well_formed_e main [("input", 1)])
+and check_funs defs def_env = match defs with 
+  | [] -> []
+  | DFun(n, args, _, _)::rest -> (match find_def def_env n with 
+    | Some(_) -> ["Multiple functions"]
+    | None -> check_parms args [])
 and check_parms args seen = match args with 
   | [] -> []
   | (s, t)::tail -> if (List.mem s seen) then ["Multiple bindings"] @ (check_parms tail [s]@seen) else (check_parms tail [s]@seen)
-
-let rec well_formed_prog (defs, main) =
-  (List.concat (List.map well_formed_def defs)) @ (check_funs defs []) @ (well_formed_e main [("input", 1)])
-and check_funs names seen = match names with 
-  | [] -> []
-  | DFun(n, _, _, _)::rest -> (if (List.mem n seen) then ["Multiple functions"] @ (check_funs rest [n]@seen) else (check_funs rest [n]@seen))
 
 let check p : string list =
   match well_formed_prog p with

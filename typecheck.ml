@@ -19,7 +19,7 @@ let rec tc_e (e : expr) (env : (string * typ) list) (def_env : def_env) : typ =
   | EBool(_) -> TBool
   | EId(x) -> (match find env x with 
     | Some(v) -> v
-    | None -> failwith (sprintf "Unbound variable identifier %s" x))
+    | None -> failwith (sprintf "Variable identifier %s unbound" x))
   | EIf(i, t, e) -> (let type_i = tc_e i env def_env in 
                     let type_t = tc_e t env def_env in 
                     let type_e = tc_e e env def_env in 
