@@ -56,12 +56,18 @@ let rec well_formed_prog (defs, main) =
   (check_funs defs []) @ (well_formed_e main [("input", 1)])
 and check_funs defs def_env = match defs with 
   | [] -> []
-  | DFun(n, args, _, _)::rest -> (match find_def def_env n with 
-    | Some(_) -> ["Multiple functions"]
-    | None -> check_parms args [])
-and check_parms args seen = match args with 
+  | DFun(n, args, ret, body)::rest -> (match find_def def_env n with 
+    | Some(_) -> ["Multiple functions"] @ check_funs rest def_env
+    | None -> let parmdup = check_parms args [] in 
+              if parmdup = [] 
+              then check_funs rest (DFun(n, args, ret, body)::def_env)
+              else parmdup @ check_funs rest (DFun(n, args, ret, body)::def_env))
+and check_parms parms env = (match parms with 
   | [] -> []
-  | (s, t)::tail -> if (List.mem s seen) then ["Multiple bindings"] @ (check_parms tail [s]@seen) else (check_parms tail [s]@seen)
+  | (s, t)::rest -> (match find env s with 
+    | Some(_) -> ["Multiple bindings"] @ check_parms rest env
+    | None -> check_parms rest ((s, 0)::env)))
+
 
 let check p : string list =
   match well_formed_prog p with
