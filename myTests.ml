@@ -49,6 +49,17 @@ let myTestList =
     t_parse "<parse" "(< 1 2)" (EPrim2(Less, ENumber(1), ENumber(2)));
     t_parse "letbodies" "(let ((x 5)) 1 2 3)"  (ELet([("x",ENumber(5))], [ENumber(1); ENumber(2); ENumber(3)]));
     t_parse "while" "(while (> 2 x) (+ x 3))" (EWhile(EPrim2(Greater, ENumber(2), EId("x")), [EPrim2(Plus, EId("x"), ENumber(3))]));
+    t "subtest" "(- 10 3)" "7";
+    t "multest" "(* 2 4)" "8";
+    t "ITE" "(if true 3 4)" "3";
+    t "lessT" "(< 3 4)" "true";
+    t "lessF" "(< 5 4)" "false";
+    t "greatT" "(> 6 5)" "true";
+    t "greatF" "(> 1 5)" "false";
+    t_err "letdup" "(let ((x 1) (x 2)) x)" "Multiple bindings for variable identifier x";
+    t_err "unbound" "(let ((x 5)) (add1 y))" "Variable identifier y unbound";  
+    t "print" "(print 5)" "5";
+    t "print0" "(print (+ 5 9))" "14";
   ]
 ;;
 

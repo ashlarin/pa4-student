@@ -54,7 +54,7 @@ and check_const name list = match list with
   | head::tail -> if (name = head) then true else (check_const name tail)
 and string_toBool name list = match list with
   | head::tail -> if (head = name) then true else false
-  | _ -> failwith "boolean creation messed up"
+  | _ -> failwith "Invalid"
 
 let rec parse_def sexp = match sexp with 
   | List(a) -> (match a with 

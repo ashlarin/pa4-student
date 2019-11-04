@@ -95,7 +95,7 @@ and check_parms_args exp args ret env def_env = match (exp, args) with
 let rec tc_def def_env (DFun(name, args, ret_typ, body)) = 
   let bod_type = check_bod args def_env body in 
   if (bod_type = ret_typ) then ret_typ else failwith "Type mismatch"
-and check_bod env def_env bods = match bods with 
+and check_bod env def_env bods = match bods with
   | head::[] -> tc_e head env def_env 
   | head::tail -> check_bod env def_env tail 
 

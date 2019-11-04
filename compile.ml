@@ -130,12 +130,10 @@ and compile_prim1 op e si env def_env = let args_expr = compile_expr e si env de
     | EBool(_) -> [IMov(Reg(RAX), true_const)]
     | _ -> [IMov(Reg(RAX), false_const)])
   | Print -> args_expr @ [IMov(Reg(RDI), Reg(RAX))]
-            @ [IPush(Const(0))]
             @ [IMov((stackloc si), Reg(RSP))]
-            @ [ISub(Reg(RSP), Const(16))]
+            @ [ISub(Reg(RSP), Const(8))]
             @ [ICall("print")]
-            @ [IMov(Reg(RSP), (stackloc 2))]
-            @ [IMov(Reg(RAX), Reg(RDI))]
+            @ [IMov(Reg(RSP), (stackloc si))]
 and compile_prim2 op e1 e2 si env def_env = let args1 = compile_expr e1 si env def_env in 
   let args2 = compile_expr e2 (si+1) env def_env in 
   let check = [IAnd((Reg(RAX)), Const(1))] @ [ICmp(Reg(RAX), Const(0))] @ [IJe("expected_num")] in
