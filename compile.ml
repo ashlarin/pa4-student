@@ -125,7 +125,7 @@ let rec compile_expr (e : expr) (si : int) (env : (string * int) list) def_env: 
       @ [IMov((stackloc si') , Reg(RBX))]
       @ [IMov((stackloc (si'+1), Reg(RSP)))]
       @ move_instr 
-      @ [ISub(Reg(RSP), Const(((si'-si+1)*8)))]
+      @ [ISub(Reg(RSP), Const(((si'-si+2)*8)))]
       @ [IJmp(name)]
       @ [ILabel(after_call)]
       @ [IMov(Reg(RSP), (stackloc 2))])
@@ -153,7 +153,6 @@ and compile_prim1 op e si env def_env = let args_expr = compile_expr e si env de
             @ [ISub(Reg(RSP), Const(16))]
             @ [ICall("print")]
             @ [IMov(Reg(RSP), (stackloc 2))]
-            @ [IMov(Reg(RAX), Const(5))]
 and compile_prim2 op e1 e2 si env def_env = let args1 = compile_expr e1 si env def_env in 
   let args2 = compile_expr e2 (si+1) env def_env in 
   match op with 

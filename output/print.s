@@ -27,7 +27,6 @@ push rbx
   sub rsp, 16
   call print
   mov rsp, [rsp -16]
-  mov rax, 5
   pop rbx
 ret
 

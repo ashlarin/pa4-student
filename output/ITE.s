@@ -22,12 +22,12 @@ push rbx
 
   mov rax, 0x2
   cmp rax, 0x2
-  jne near temp_else_branch_7
+  jne near temp_else_branch_12
   mov rax, 7
-  jmp near temp_end_of_if_8
-temp_else_branch_7:
+  jmp near temp_end_of_if_13
+temp_else_branch_12:
   mov rax, 9
-temp_end_of_if_8:
+temp_end_of_if_13:
   pop rbx
 ret
 
