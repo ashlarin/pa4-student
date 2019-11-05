@@ -22,26 +22,20 @@ push rbx
 
   mov rax, 11
   mov [rsp -16], rax
-  and rax, 1
-  cmp rax, 0
-  je near expected_num
   mov rax, 19
   mov [rsp -24], rax
-  and rax, 1
-  cmp rax, 0
-  je near expected_num
   mov rax, [rsp -24]
   sar rax, 1
   shl rax, 1
   add rax, [rsp -16]
   jo near overflow
   mov rdi, rax
-  mov [rsp -16], rax
-  mov [rsp -24], rsp
+  mov [rsp -16], rsp
+  mov [rsp -24], rax
   sub rsp, 16
   call print
-  mov rsp, [rsp -24]
-  mov rax, [rsp -16]
+  mov rsp, [rsp -16]
+  mov rax, 5
   pop rbx
 ret
 

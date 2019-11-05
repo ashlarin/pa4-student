@@ -1,0 +1,17 @@
+(def func1 (n1 : Num n2 : Num b1 : Bool ) : Bool
+    (if b1 (set n1 (func2 n1 (* n1 n2))) (set n1 (func2 n1 (+ n1 n2))))
+    (if (< n1 n2) true false)
+)
+
+(def func2 (n1 : Num n2 : Num) : Num 
+    (while (< n1 n2)
+        (set n1 (* 2 n1))
+        (print n1)
+    )
+    (if (func3 n1) n2 n1)
+)
+
+(def func3 (n1 : Num) : Num 
+    (set n1 (- n1 1))
+)
+

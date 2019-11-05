@@ -22,14 +22,8 @@ push rbx
 
   mov rax, 7
   mov [rsp -16], rax
-  and rax, 1
-  cmp rax, 0
-  je near expected_num
   mov rax, 9
   mov [rsp -24], rax
-  and rax, 1
-  cmp rax, 0
-  je near expected_num
   mov rax, [rsp -16]
   cmp rax, [rsp -24]
   jl near temp_true_branch_9

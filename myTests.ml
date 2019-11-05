@@ -60,6 +60,7 @@ let myTestList =
     t_err "unbound" "(let ((x 5)) (add1 y))" "Variable identifier y unbound";  
     t "print" "(print 5)" "5\n5";
     t "print0" "(print (+ 5 9))" "14\n14";
+    t "lettest" "(let ((x -3)) (if (< x 0) (* -1 x) x))" "3";
   ]
 ;;
 

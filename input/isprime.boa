@@ -1,0 +1,4 @@
+(def remainder (input1 : Num input2 : Num) : Num
+    if (< (- input1 input2) 0) (print input1) (remainder (- input1 input2))) 
+(def isprime (n1 : Num) : Bool
+    (let ((x 2)) (while (< x n1) (if (== (remainder n1 x) 0) false (set n (+ n 1) ) true))))

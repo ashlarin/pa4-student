@@ -22,16 +22,10 @@ push rbx
 
   mov rax, 85
   mov [rsp -16], rax
-  and rax, 1
-  cmp rax, 0
-  je near expected_num
   mov rax, [rsp -16]
   sub rax, 2
   jo near overflow
   mov [rsp -16], rax
-  and rax, 1
-  cmp rax, 0
-  je near expected_num
   mov rax, [rsp -16]
   sub rax, 2
   jo near overflow

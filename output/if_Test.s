@@ -26,8 +26,6 @@ push rbx
   mov rax, 11
   jmp near temp_end_of_if_2
 temp_else_branch_1:
-  cmp rax, 0
-  jne near expected_bool
   mov rax, 13
 temp_end_of_if_2:
   pop rbx

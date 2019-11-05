@@ -24,14 +24,8 @@ push rbx
   mov [rsp -16], rax
   mov rax, [rsp -16]
   mov [rsp -24], rax
-  and rax, 1
-  cmp rax, 0
-  je near expected_num
   mov rax, 15
   mov [rsp -32], rax
-  and rax, 1
-  cmp rax, 0
-  je near expected_num
   mov rax, [rsp -24]
   cmp rax, [rsp -32]
   jne near temp_false_branch_1
@@ -45,8 +39,6 @@ temp_end_equals_2:
   mov rax, 15
   jmp near temp_end_of_if_4
 temp_else_branch_3:
-  cmp rax, 0
-  jne near expected_bool
   mov rax, 17
 temp_end_of_if_4:
   pop rbx

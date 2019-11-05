@@ -22,14 +22,8 @@ push rbx
 
   mov rax, 11
   mov [rsp -16], rax
-  and rax, 1
-  cmp rax, 0
-  je near expected_num
   mov rax, 21
   mov [rsp -24], rax
-  and rax, 1
-  cmp rax, 0
-  je near expected_num
   mov rax, [rsp -24]
   sar rax, 1
   shl rax, 1

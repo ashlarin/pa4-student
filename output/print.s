@@ -22,12 +22,12 @@ push rbx
 
   mov rax, 11
   mov rdi, rax
-  mov [rsp -16], rax
-  mov [rsp -24], rsp
+  mov [rsp -16], rsp
+  mov [rsp -24], rax
   sub rsp, 16
   call print
-  mov rsp, [rsp -24]
-  mov rax, [rsp -16]
+  mov rsp, [rsp -16]
+  mov rax, 5
   pop rbx
 ret
 

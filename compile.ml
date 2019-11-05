@@ -96,9 +96,7 @@ let rec compile_expr (e : expr) (si : int) (env : (string * int) list) def_env: 
                     @ [IJne(elsebranch)]
                     @ t_b
                     @ [IJmp(end_if)]
-                    @ [ILabel(elsebranch)] 
-                    @ [ICmp(Reg(RAX), false_const)]
-                    @ [IJne("expected_bool")]
+                    @ [ILabel(elsebranch)]
                     @ e_b
                     @ [ILabel(end_if)]
   | ESet(x, e) -> let eval_e = compile_expr e si env def_env in
@@ -119,16 +117,26 @@ let rec compile_expr (e : expr) (si : int) (env : (string * int) list) def_env: 
                        @ [IMov(Reg(RAX), false_const)]
   | EApp(name, exps) -> (match find_def def_env name with 
     | None -> failwith "Unbound"
-    | Some(DFun(name, args, ret, body)) -> failwith "Not yet implemented")
+    | Some(DFun(name, args, ret, body)) -> 
+      let (instr', env', si', def_env') = (List.fold_left compile_appExps ([], env, si, def_env) exps) in
+      let after_call = gen_temp "after_call" in
+      let (move_instr, new_si, new_si') = (List.fold_left mov_args ([], si, (si'+2)) exps) in 
+      instr' @ [IMov(Reg(RBX), Label(after_call))]
+      @ [IMov((stackloc si') , Reg(RBX))]
+      @ [IMov((stackloc (si'+1), Reg(RSP)))]
+      @ move_instr 
+      @ [ISub(Reg(RSP), Const(((si'-si+1)*8)))]
+      @ [IJmp(name)]
+      @ [ILabel(after_call)]
+      @ [IMov(Reg(RSP), (stackloc 2))])
 and compile_prim1 op e si env def_env = let args_expr = compile_expr e si env def_env in
   let expr = e in 
-  let check = [IAnd((Reg(RAX)), Const(1))] @ [ICmp(Reg(RAX), Const(0))] @ [IJe("expected_num")] in 
   match op with 
-  | Add1 -> args_expr @ [IMov((stackloc si), Reg(RAX))] @ check
+  | Add1 -> args_expr @ [IMov((stackloc si), Reg(RAX))]
             @ [IMov(Reg(RAX), (stackloc si))]
             @ [IAdd(Reg(RAX), Const(2))]
             @ [IJo("overflow")]
-  | Sub1 -> args_expr @ [IMov((stackloc si), Reg(RAX))] @ check
+  | Sub1 -> args_expr @ [IMov((stackloc si), Reg(RAX))]
             @ [IMov(Reg(RAX), (stackloc si))]
             @ [ISub(Reg(RAX), Const(2))]
             @ [IJo("overflow")]
@@ -140,32 +148,31 @@ and compile_prim1 op e si env def_env = let args_expr = compile_expr e si env de
     | _ -> [IMov(Reg(RAX), false_const)])
   | Print -> args_expr
             @ [IMov(Reg(RDI), Reg(RAX))]
-            @ [IMov(stackloc si, Reg(RAX))]
-            @ [IMov(stackloc (si+1), Reg(RSP))]
+            @ [IMov(stackloc si, Reg(RSP))]
+            @ [IMov(stackloc (si+1), Reg(RAX))]
             @ [ISub(Reg(RSP), Const(16))]
             @ [ICall("print")]
-            @ [IMov(Reg(RSP), (stackloc (si+1)))]
-            @ [IMov(Reg(RAX), (stackloc si))]
+            @ [IMov(Reg(RSP), (stackloc 2))]
+            @ [IMov(Reg(RAX), Const(5))]
 and compile_prim2 op e1 e2 si env def_env = let args1 = compile_expr e1 si env def_env in 
   let args2 = compile_expr e2 (si+1) env def_env in 
-  let check = [IAnd((Reg(RAX)), Const(1))] @ [ICmp(Reg(RAX), Const(0))] @ [IJe("expected_num")] in
   match op with 
-  | Plus -> args1 @ [IMov((stackloc si), Reg(RAX))] @ check 
-            @ args2 @ [IMov(((stackloc (si+1)), Reg(RAX)))] @ check
+  | Plus -> args1 @ [IMov((stackloc si), Reg(RAX))]
+            @ args2 @ [IMov(((stackloc (si+1)), Reg(RAX)))]
             @ [IMov(Reg(RAX), stackloc (si+1))]
             @ [ISar(Reg(RAX), Const(1))] @ [IShl(Reg(RAX), Const(1))]
             @ [IAdd(Reg(RAX), (stackloc (si)))]
             @ [IJo("overflow")]
-  | Minus -> args1 @ [IMov((stackloc si), Reg(RAX))] @ check
-            @ args2 @ [IMov((stackloc (si+1)), Reg(RAX))] @ check
+  | Minus -> args1 @ [IMov((stackloc si), Reg(RAX))]
+            @ args2 @ [IMov((stackloc (si+1)), Reg(RAX))]
             @ [IMov(Reg(RAX), (stackloc (si+1)))]
             @ [ISar(Reg(RAX), Const(1))] @ [IShl(Reg(RAX), Const(1))]
             @ [IMov((stackloc (si+1)), Reg(RAX))]
             @ [IMov(Reg(RAX), (stackloc si))] 
             @ [ISub(Reg(RAX), (stackloc (si+1)))]
             @ [IJo("overflow")]
-  | Times -> args1 @ [IMov((stackloc si), Reg(RAX))] @ check
-            @ args2 @ [IMov((stackloc (si+1)), Reg(RAX))] @ check
+  | Times -> args1 @ [IMov((stackloc si), Reg(RAX))]
+            @ args2 @ [IMov((stackloc (si+1)), Reg(RAX))]
             @ [IMov(Reg(RAX), (stackloc (si+1)))] @ [ISar(Reg(RAX), Const(1))]
             @ [IMov((stackloc (si+1), Reg(RAX)))]
             @ [IMov(Reg(RAX), (stackloc si))] @ [ISub(Reg(RAX), Const(1))]             
@@ -175,8 +182,8 @@ and compile_prim2 op e1 e2 si env def_env = let args1 = compile_expr e1 si env d
             @ [IJo("overflow")]
   | Less -> let true_branch = gen_temp "true_branch" in 
             let end_equals = gen_temp "end_equals" in 
-            args1 @ [IMov((stackloc si), Reg(RAX))] @ check 
-            @ args2 @ [IMov((stackloc (si+1)), Reg(RAX))] @ check
+            args1 @ [IMov((stackloc si), Reg(RAX))]
+            @ args2 @ [IMov((stackloc (si+1)), Reg(RAX))]
             @ [IMov(Reg(RAX), (stackloc si))]
             @ [ICmp(Reg(RAX), (stackloc (si+1)))] 
             @ [IJl(true_branch)]
@@ -187,8 +194,8 @@ and compile_prim2 op e1 e2 si env def_env = let args1 = compile_expr e1 si env d
             @ [ILabel(end_equals)]
   | Greater -> let true_branch = gen_temp "true_branch" in 
             let end_equals = gen_temp "end_equals" in 
-            args1 @ [IMov((stackloc si), Reg(RAX))] @ check 
-            @ args2 @ [IMov((stackloc (si+1)), Reg(RAX))] @ check
+            args1 @ [IMov((stackloc si), Reg(RAX))]
+            @ args2 @ [IMov((stackloc (si+1)), Reg(RAX))]
             @ [IMov(Reg(RAX), (stackloc si))]
             @ [ICmp(Reg(RAX), (stackloc (si+1)))] 
             @ [IJg(true_branch)]
@@ -199,8 +206,8 @@ and compile_prim2 op e1 e2 si env def_env = let args1 = compile_expr e1 si env d
             @ [ILabel(end_equals)]
   | Equal -> let false_branch = gen_temp "false_branch" in 
             let end_equals = gen_temp "end_equals" in 
-            args1 @ [IMov((stackloc si), Reg(RAX))] @ check 
-            @ args2 @ [IMov((stackloc (si+1)), Reg(RAX))] @ check
+            args1 @ [IMov((stackloc si), Reg(RAX))]
+            @ args2 @ [IMov((stackloc (si+1)), Reg(RAX))]
             @ [IMov(Reg(RAX), (stackloc si))]
             @ [ICmp(Reg(RAX), (stackloc (si+1)))] 
             @ [IJne(false_branch)]
@@ -227,6 +234,10 @@ and bindings (instr, env, si, def_env) l = match l with
                                                              else (instr @ value @ store, (n, si)::env, (si+1), def_env)
 and compile_bod (instr, env, si, def_env) l = (let cur = compile_expr l si env def_env in 
                                      (instr @ cur, env, (si+1), def_env))
+and compile_appExps (instr, env, si, def_env) l = (let cur = compile_expr l si env def_env in 
+                                     (instr @ cur @ [IMov(stackloc si, Reg(RAX))], env, (si+1), def_env))
+and mov_args (move_instr, si, si') l = (move_instr @ [IMov(Reg(RAX), stackloc si)]
+                                                           @ [IMov((stackloc si', Reg(RAX)))], (si+1), (si'+1))
 
 let compile_to_string ((defs, main) as prog : Expr.prog) =
   let _ = check prog in
