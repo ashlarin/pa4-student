@@ -148,11 +148,9 @@ and compile_prim1 op e si env def_env = let args_expr = compile_expr e si env de
     | _ -> [IMov(Reg(RAX), false_const)])
   | Print -> args_expr
             @ [IMov(Reg(RDI), Reg(RAX))]
-            @ [IMov(stackloc si, Reg(RSP))]
-            @ [IMov(stackloc (si+1), Reg(RAX))]
-            @ [ISub(Reg(RSP), Const(16))]
-            @ [ICall("print")]
-            @ [IMov(Reg(RSP), (stackloc 2))]
+            @ [ISub(Reg(RSP), Const(8*si))]
+            @ [ICall("printPrint")]
+            @ [IAdd(Reg(RSP), Const(8*si))]
 and compile_prim2 op e1 e2 si env def_env = let args1 = compile_expr e1 si env def_env in 
   let args2 = compile_expr e2 (si+1) env def_env in 
   match op with 
@@ -247,6 +245,7 @@ let compile_to_string ((defs, main) as prog : Expr.prog) =
   let prelude = "  section .text\n" ^
                 "  extern error\n" ^
                 "  extern print\n" ^
+                "  extern printPrint\n" ^
                 "  global our_code_starts_here\n" in
   let kickoff = "our_code_starts_here:\n" ^
                 "push rbx\n" ^

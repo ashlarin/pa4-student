@@ -1,6 +1,7 @@
   section .text
   extern error
   extern print
+  extern printPrint
   global our_code_starts_here
 
   ret
@@ -22,11 +23,9 @@ push rbx
 
   mov rax, 11
   mov rdi, rax
-  mov [rsp -16], rsp
-  mov [rsp -24], rax
   sub rsp, 16
-  call print
-  mov rsp, [rsp -16]
+  call printPrint
+  add rsp, 16
   pop rbx
 ret
 

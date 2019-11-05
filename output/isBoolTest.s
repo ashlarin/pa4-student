@@ -1,6 +1,7 @@
   section .text
   extern error
   extern print
+  extern printPrint
   global our_code_starts_here
 
   ret

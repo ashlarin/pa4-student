@@ -11,6 +11,7 @@
 
 extern int64_t our_code_starts_here(int64_t input_val) asm("our_code_starts_here");
 extern int64_t print(int64_t input_val) asm("print");
+extern int64_t printPrint(int64_t input_val) asm("printPrint");
 extern void error(int64_t val) asm("error");
 
 int64_t print(int64_t val) {
@@ -27,6 +28,22 @@ int64_t print(int64_t val) {
     printf("Unknown value %lld\n", val);
   }
   return 0;
+}
+
+int64_t printPrint(int64_t val) {
+  if((val & 1)) {
+    printf("%lld\n", (val - 1)/ 2);
+  }
+  else if(val == 0x0000000000000002) {
+    printf("true\n");
+  }
+  else if(val == 0x0000000000000000) {
+    printf("false\n");
+  }
+  else {
+    printf("Unknown value %lld\n", val);
+  }
+  return val;
 }
 
 void error(int64_t error_code) {

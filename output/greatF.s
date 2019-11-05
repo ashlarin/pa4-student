@@ -1,6 +1,7 @@
   section .text
   extern error
   extern print
+  extern printPrint
   global our_code_starts_here
 
   ret
@@ -26,12 +27,12 @@ push rbx
   mov [rsp -24], rax
   mov rax, [rsp -16]
   cmp rax, [rsp -24]
-  jg near temp_true_branch_16
+  jg near temp_true_branch_9
   mov rax, 0
-  jmp near temp_end_equals_17
-temp_true_branch_16:
+  jmp near temp_end_equals_10
+temp_true_branch_9:
   mov rax, 0x2
-temp_end_equals_17:
+temp_end_equals_10:
   pop rbx
 ret
 

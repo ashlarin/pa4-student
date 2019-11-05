@@ -39,7 +39,7 @@ let boolTest = "true"
 let isBoolTest = "(isBool false)"
 let isBoolTestF = "(isBool 5)"
 let isNumTest = "(isNum 5)"
-let defTest = "(def abs_val (x : Num) : Num (if (< x 0) (* -1 x) x)) (abs_val -3)"
+let defTest = "(def abs_val (x : Num y : Bool z : Num) : Num (if (< x 0) (* -1 x) x)) (abs_val -3 true 3)"
 
 let num_p_overflow = "4611686018427387904"
 let num_p_underflow = "-4611686018427387905"
