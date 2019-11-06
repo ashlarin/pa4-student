@@ -61,14 +61,21 @@ let myTestList =
     t "print" "(print 5)" "5\n5";
     t "print0" "(print (+ 5 9))" "14\n14";
     t "lettest" "(let ((x -3)) (if (< x 0) (* -1 x) x))" "3";
-    t "evenodd" "(def even (n : Num) : Bool
-                  (if (== n 0) true (odd (- n 1))))
-                 (def odd (n : Num) : Bool
-                  (if (== n 0) false (even (- n 1))))
-                 (def test() : Bool
-                    (even 30)
-                    (odd 31))
-                  (test)" ""
+    t "print1" "(print (let ((x (let ((x 5)) (sub1 x)))) (sub1 x)))" "3\n3";
+    t "param1Num" "(def test (x : Num) : Num 1) (test 1)" "1";
+    t "param2Num" "(def test (x : Num y : Num) : Num 1) (test 1 2)" "1";
+    t "param3Num" "(def test (x : Num y : Num z : Num) : Num 1) (test 1 2 3)" "1";
+    t "param4Num" "(def test (x : Num y : Num z : Num a : Num) : Num 1) (test 1 2 3 4)" "1";
+    t "param1Bool" "(def test (x : Bool) : Num 1) (test true)" "1";
+    t "param2Bool" "(def test (x : Bool y : Bool) : Num 1) (test true true)" "1";
+    t "param3Bool" "(def test (x : Bool y : Bool z : Bool) : Num 1) (test true false true)" "1";
+    t "param4Bool" "(def test (x : Bool y : Bool z : Bool a : Bool) : Num 1) (test false true false true)" "1";
+    t "param1Mix" "(def test (x : Num) : Bool true) (test 1)" "true";
+    t "param2Mix" "(def test (x : Num y : Bool) : Num 1) (test 1 true)" "1";
+    t "param3Mix" "(def test (x : Num y : Bool z : Num) : Bool true) (test 1 true 2)" "true";
+    t "param2Mix2" "(def test (x : Bool y : Num) : Num 1) (test true 1)" "1";
+
+
   ]
 ;;
 

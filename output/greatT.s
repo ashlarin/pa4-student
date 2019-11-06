@@ -27,12 +27,12 @@ push rbx
   mov [rsp -24], rax
   mov rax, [rsp -16]
   cmp rax, [rsp -24]
-  jg near temp_true_branch_12
+  jg near temp_true_branch_14
   mov rax, 0
-  jmp near temp_end_equals_13
-temp_true_branch_12:
+  jmp near temp_end_equals_15
+temp_true_branch_14:
   mov rax, 0x2
-temp_end_equals_13:
+temp_end_equals_15:
   pop rbx
 ret
 

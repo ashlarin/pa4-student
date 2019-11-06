@@ -65,21 +65,25 @@ let rec parse_def sexp = match sexp with
     | Atom("def")::Atom(s)::List(parm)::Atom(":")::Atom(ret)::rest -> ((if (Str.string_match valid_id_regex s 0)
                                                                         then (if check_reserved s reserved_words
                                                                               then failwith "Invalid"
-                                                                              else let parm' = parse_type parm [] in
-                                                                                   let ret' = check_type ret in 
-                                                                                   if rest = [] 
-                                                                                   then failwith "Invalid"
-                                                                                   else let exp' = List.map parse rest in 
-                                                                                   DFun(s, parm', ret', exp'))
+                                                                              else (if check_const s reserved_constants 
+                                                                                    then failwith "Invalid"
+                                                                                    else let parm' = (List.rev (parse_type parm [])) in
+                                                                                         let ret' = check_type ret in 
+                                                                                         if rest = [] 
+                                                                                         then failwith "Invalid"
+                                                                                         else let exp' = List.map parse rest in 
+                                                                                         DFun(s, parm', ret', exp')))
                                                                         else failwith "Invalid"))
     | _ -> failwith "Invalid")
   | _ -> failwith "Invalid"
 and parse_type parm l = match parm with 
-  | Atom(s)::Atom(":")::Atom(t)::rest -> ((if (Str.string_match valid_id_regex s 0)
+  | Atom(s)::Atom(":")::Atom(t)::rest -> (if (Str.string_match valid_id_regex s 0)
                                            then (if check_reserved s reserved_words
                                                  then failwith "Invalid"
-                                                 else parse_type rest [(s, check_type t)]@l)
-                                           else failwith "Invalid"))
+                                                 else (if check_const s reserved_constants 
+                                                       then failwith "Invalid"
+                                                       else parse_type rest l@[(s, check_type t)]))
+                                           else failwith "Invalid")
   | [] -> l
   | _ -> failwith "Invalid"
 and check_type t = if t = "Num" then TNum else 

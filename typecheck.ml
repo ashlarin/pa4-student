@@ -86,11 +86,14 @@ and type_letbinds (newEnv, def_env) l = match l with
 and check_parms_args exp args ret env def_env = match (exp, args) with 
   | [], [] -> ret
   | (h::t), (h'::t') -> let h_type = tc_e h env def_env in 
-                        if (h_type = h') 
+                        if (h_type = h')
                         then check_parms_args t t' ret env def_env
                         else failwith "Type mismatch"
   | _,_ -> failwith "Type mismatch"
-    
+and type_tostring t = match t with 
+  | TNum -> "num"
+  | TBool -> "bool"
+
 let rec tc_def def_env (DFun(name, args, ret_typ, body)) = 
   let bod_type = check_bod args def_env body in 
   if (bod_type = ret_typ) then ret_typ else failwith "Type mismatch"
