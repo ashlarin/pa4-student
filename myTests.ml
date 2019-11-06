@@ -61,6 +61,14 @@ let myTestList =
     t "print" "(print 5)" "5\n5";
     t "print0" "(print (+ 5 9))" "14\n14";
     t "lettest" "(let ((x -3)) (if (< x 0) (* -1 x) x))" "3";
+    t "evenodd" "(def even (n : Num) : Bool
+                  (if (== n 0) true (odd (- n 1))))
+                 (def odd (n : Num) : Bool
+                  (if (== n 0) false (even (- n 1))))
+                 (def test() : Bool
+                    (even 30)
+                    (odd 31))
+                  (test)" ""
   ]
 ;;
 

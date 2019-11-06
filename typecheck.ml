@@ -88,7 +88,7 @@ and check_parms_args exp args ret env def_env = match (exp, args) with
   | (h::t), (h'::t') -> let h_type = tc_e h env def_env in 
                         if (h_type = h') 
                         then check_parms_args t t' ret env def_env
-                        else failwith "Type mismatch tt"
+                        else failwith "Type mismatch"
   | _,_ -> failwith "Type mismatch"
     
 let rec tc_def def_env (DFun(name, args, ret_typ, body)) = 
