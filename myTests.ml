@@ -74,6 +74,7 @@ let myTestList =
     t "param2Mix" "(def test (x : Num y : Bool) : Num 1) (test 1 true)" "1";
     t "param3Mix" "(def test (x : Num y : Bool z : Num) : Bool true) (test 1 true 2)" "true";
     t "param2Mix2" "(def test (x : Bool y : Num) : Num 1) (test true 1)" "1";
+    t "fib" "(def fibonacci (n : Num) : Num (if (< n 2) 1 (+ (fibonacci (- n 1)) (fibonacci (- n 2))))) (fibonacci 3)" "3";
 
 
   ]

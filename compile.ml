@@ -125,19 +125,18 @@ let rec compile_expr (e : expr) (si : int) (env : (string * int) list) def_env: 
       @ [IMov((stackloc si') , Reg(RBX))]
       @ [IMov((stackloc (si'+1), Reg(RSP)))]
       @ move_instr 
-      @ [ISub(Reg(RSP), Const(((si'-si+2)*8)))]
+      @ [ISub(Reg(RSP), Const(((si')*8)))]
       @ [IJmp(name)]
       @ [ILabel(after_call)]
       @ [IMov(Reg(RSP), (stackloc 2))])
+      @ [IMov((stackloc si), Reg(RAX))]
 and compile_prim1 op e si env def_env = let args_expr = compile_expr e si env def_env in
   let expr = e in 
   match op with 
-  | Add1 -> args_expr @ [IMov((stackloc si), Reg(RAX))]
-            @ [IMov(Reg(RAX), (stackloc si))]
+  | Add1 -> args_expr 
             @ [IAdd(Reg(RAX), Const(2))]
             @ [IJo("overflow")]
-  | Sub1 -> args_expr @ [IMov((stackloc si), Reg(RAX))]
-            @ [IMov(Reg(RAX), (stackloc si))]
+  | Sub1 -> args_expr 
             @ [ISub(Reg(RAX), Const(2))]
             @ [IJo("overflow")]
   | IsNum -> (match expr with 
@@ -156,22 +155,19 @@ and compile_prim2 op e1 e2 si env def_env = let args1 = compile_expr e1 si env d
   let args2 = compile_expr e2 (si+1) env def_env in 
   match op with 
   | Plus -> args1 @ [IMov((stackloc si), Reg(RAX))]
-            @ args2 @ [IMov(((stackloc (si+1)), Reg(RAX)))]
-            @ [IMov(Reg(RAX), stackloc (si+1))]
+            @ args2 
             @ [ISar(Reg(RAX), Const(1))] @ [IShl(Reg(RAX), Const(1))]
             @ [IAdd(Reg(RAX), (stackloc (si)))]
             @ [IJo("overflow")]
   | Minus -> args1 @ [IMov((stackloc si), Reg(RAX))]
-            @ args2 @ [IMov((stackloc (si+1)), Reg(RAX))]
-            @ [IMov(Reg(RAX), (stackloc (si+1)))]
+            @ args2 
             @ [ISar(Reg(RAX), Const(1))] @ [IShl(Reg(RAX), Const(1))]
             @ [IMov((stackloc (si+1)), Reg(RAX))]
             @ [IMov(Reg(RAX), (stackloc si))] 
             @ [ISub(Reg(RAX), (stackloc (si+1)))]
             @ [IJo("overflow")]
   | Times -> args1 @ [IMov((stackloc si), Reg(RAX))]
-            @ args2 @ [IMov((stackloc (si+1)), Reg(RAX))]
-            @ [IMov(Reg(RAX), (stackloc (si+1)))] @ [ISar(Reg(RAX), Const(1))]
+            @ args2  @ [ISar(Reg(RAX), Const(1))]
             @ [IMov((stackloc (si+1), Reg(RAX)))]
             @ [IMov(Reg(RAX), (stackloc si))] @ [ISub(Reg(RAX), Const(1))]             
             @ [IMul(Reg(RAX), (stackloc (si+1)))]

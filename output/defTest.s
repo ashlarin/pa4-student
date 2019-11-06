@@ -22,8 +22,6 @@ temp_end_equals_8:
   mov rax, -1
   mov [rsp -32], rax
   mov rax, [rsp -16]
-  mov [rsp -40], rax
-  mov rax, [rsp -40]
   sar rax, 1
   mov [rsp -40], rax
   mov rax, [rsp -32]
@@ -65,6 +63,7 @@ push rbx
   jmp near abs_val
 temp_after_call_11:
   mov rsp, [rsp -16]
+  mov [rsp -16], rax
   pop rbx
 ret
 

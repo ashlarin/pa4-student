@@ -24,8 +24,6 @@ push rbx
   mov rax, 21
   mov [rsp -16], rax
   mov rax, 7
-  mov [rsp -24], rax
-  mov rax, [rsp -24]
   sar rax, 1
   shl rax, 1
   mov [rsp -24], rax

@@ -22,8 +22,6 @@ push rbx
   mov [rsp - 8], rdi
 
   mov rax, [rsp -8]
-  mov [rsp -16], rax
-  mov rax, [rsp -16]
   add rax, 2
   jo near overflow
   pop rbx

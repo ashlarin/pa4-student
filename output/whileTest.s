@@ -43,8 +43,6 @@ temp_end_equals_6:
   mov rax, [rsp -24]
   mov [rsp -32], rax
   mov rax, 3
-  mov [rsp -40], rax
-  mov rax, [rsp -40]
   sar rax, 1
   shl rax, 1
   add rax, [rsp -32]

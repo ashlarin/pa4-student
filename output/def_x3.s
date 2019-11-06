@@ -26,8 +26,6 @@ push rbx
   mov rax, 135
   mov [rsp -24], rax
   mov rax, [rsp -24]
-  mov [rsp -32], rax
-  mov rax, [rsp -32]
   sub rax, 2
   jo near overflow
   pop rbx
