@@ -24,7 +24,7 @@ push rbx
   mov rax, 11
   mov rdi, rax
   sub rsp, 16
-  call printPrint
+  call print
   add rsp, 16
   pop rbx
 ret

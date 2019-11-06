@@ -27,7 +27,7 @@ int64_t print(int64_t val) {
   else {
     printf("Unknown value %lld\n", val);
   }
-  return 0;
+  return val;
 }
 
 int64_t printPrint(int64_t val) {

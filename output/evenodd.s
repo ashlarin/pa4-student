@@ -11,17 +11,17 @@ even:
   mov [rsp -32], rax
   mov rax, [rsp -24]
   cmp rax, [rsp -32]
-  jne near temp_false_branch_22
+  jne near temp_false_branch_16
   mov rax, 0x2
-  jmp near temp_end_equals_23
-temp_false_branch_22:
+  jmp near temp_end_equals_17
+temp_false_branch_16:
   mov rax, 0
-temp_end_equals_23:
+temp_end_equals_17:
   cmp rax, 0x2
-  jne near temp_else_branch_25
+  jne near temp_else_branch_19
   mov rax, 0x2
-  jmp near temp_end_of_if_26
-temp_else_branch_25:
+  jmp near temp_end_of_if_20
+temp_else_branch_19:
   mov rax, [rsp -16]
   mov [rsp -32], rax
   mov rax, 3
@@ -34,16 +34,16 @@ temp_else_branch_25:
   sub rax, [rsp -40]
   jo near overflow
   mov [rsp -32], rax
-  mov rbx, temp_after_call_24
+  mov rbx, temp_after_call_18
   mov [rsp -40], rbx
   mov [rsp -48], rsp
   mov rax, [rsp -32]
   mov [rsp -56], rax
   sub rsp, 24
   jmp near odd
-temp_after_call_24:
+temp_after_call_18:
   mov rsp, [rsp -16]
-temp_end_of_if_26:
+temp_end_of_if_20:
   ret
 odd:
   mov rax, [rsp -16]
@@ -52,17 +52,17 @@ odd:
   mov [rsp -32], rax
   mov rax, [rsp -24]
   cmp rax, [rsp -32]
-  jne near temp_false_branch_27
+  jne near temp_false_branch_21
   mov rax, 0x2
-  jmp near temp_end_equals_28
-temp_false_branch_27:
+  jmp near temp_end_equals_22
+temp_false_branch_21:
   mov rax, 0
-temp_end_equals_28:
+temp_end_equals_22:
   cmp rax, 0x2
-  jne near temp_else_branch_30
+  jne near temp_else_branch_24
   mov rax, 0
-  jmp near temp_end_of_if_31
-temp_else_branch_30:
+  jmp near temp_end_of_if_25
+temp_else_branch_24:
   mov rax, [rsp -16]
   mov [rsp -32], rax
   mov rax, 3
@@ -75,39 +75,39 @@ temp_else_branch_30:
   sub rax, [rsp -40]
   jo near overflow
   mov [rsp -32], rax
-  mov rbx, temp_after_call_29
+  mov rbx, temp_after_call_23
   mov [rsp -40], rbx
   mov [rsp -48], rsp
   mov rax, [rsp -32]
   mov [rsp -56], rax
   sub rsp, 24
   jmp near even
-temp_after_call_29:
+temp_after_call_23:
   mov rsp, [rsp -16]
-temp_end_of_if_31:
+temp_end_of_if_25:
   ret
 test:
   mov rax, 61
   mov [rsp -16], rax
-  mov rbx, temp_after_call_32
+  mov rbx, temp_after_call_26
   mov [rsp -24], rbx
   mov [rsp -32], rsp
   mov rax, [rsp -16]
   mov [rsp -40], rax
   sub rsp, 24
   jmp near even
-temp_after_call_32:
+temp_after_call_26:
   mov rsp, [rsp -16]
   mov rax, 63
   mov [rsp -24], rax
-  mov rbx, temp_after_call_33
+  mov rbx, temp_after_call_27
   mov [rsp -32], rbx
   mov [rsp -40], rsp
   mov rax, [rsp -24]
   mov [rsp -48], rax
   sub rsp, 24
   jmp near odd
-temp_after_call_33:
+temp_after_call_27:
   mov rsp, [rsp -16]
   ret
   ret
@@ -127,12 +127,12 @@ our_code_starts_here:
 push rbx
   mov [rsp - 8], rdi
 
-  mov rbx, temp_after_call_34
+  mov rbx, temp_after_call_28
   mov [rsp -16], rbx
   mov [rsp -24], rsp
   sub rsp, 16
   jmp near test
-temp_after_call_34:
+temp_after_call_28:
   mov rsp, [rsp -16]
   pop rbx
 ret

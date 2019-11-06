@@ -29,14 +29,14 @@ push rbx
   mov [rsp -32], rax
   mov rax, [rsp -24]
   cmp rax, [rsp -32]
-  jl near temp_true_branch_18
+  jl near temp_true_branch_11
   mov rax, 0
-  jmp near temp_end_equals_19
-temp_true_branch_18:
+  jmp near temp_end_equals_12
+temp_true_branch_11:
   mov rax, 0x2
-temp_end_equals_19:
+temp_end_equals_12:
   cmp rax, 0x2
-  jne near temp_else_branch_20
+  jne near temp_else_branch_13
   mov rax, -1
   mov [rsp -32], rax
   mov rax, [rsp -16]
@@ -50,10 +50,10 @@ temp_end_equals_19:
   jo near overflow
   add rax, 1
   jo near overflow
-  jmp near temp_end_of_if_21
-temp_else_branch_20:
+  jmp near temp_end_of_if_14
+temp_else_branch_13:
   mov rax, [rsp -16]
-temp_end_of_if_21:
+temp_end_of_if_14:
   pop rbx
 ret
 
