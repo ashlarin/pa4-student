@@ -149,8 +149,8 @@ and compile_prim1 op e si env def_env = let args_expr = compile_expr e si env de
   | Print -> args_expr
             @ [IMov(Reg(RDI), Reg(RAX))]
             @ [ISub(Reg(RSP), Const(8*si))]
-            @ [ICall("printPrint")]
             @ [IPush(Const(0))]
+            @ [ICall("printPrint")]
             @ [IAdd(Reg(RSP), Const(8*si))]
 and compile_prim2 op e1 e2 si env def_env = let args1 = compile_expr e1 si env def_env in 
   let args2 = compile_expr e2 (si+1) env def_env in 
