@@ -146,7 +146,7 @@ and compile_prim1 op e si env def_env = let args_expr = compile_expr e si env de
   | IsBool -> (match expr with 
     | EBool(_) -> [IMov(Reg(RAX), true_const)]
     | _ -> [IMov(Reg(RAX), false_const)])
-  | Print -> let offset = if ((si mod 2) = 0) then ((si-1)*8) else (8*si) in
+  | Print -> let offset = if ((si mod 2) = 1) then ((si-1)*8) else (8*si) in
             args_expr
             @ [IMov(Reg(RDI), Reg(RAX))]
             @ [ISub(Reg(RSP), Const(offset))]
