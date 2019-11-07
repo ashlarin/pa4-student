@@ -125,7 +125,7 @@ let rec compile_expr (e : expr) (si : int) (env : (string * int) list) def_env: 
       @ [IMov((stackloc si') , Reg(RBX))]
       @ [IMov((stackloc (si'+1), Reg(RSP)))]
       @ move_instr 
-      @ [ISub(Reg(RSP), Const(((si')*8)))]
+      @ [ISub(Reg(RSP), Const((si'*8)))]
       @ [IJmp(name)]
       @ [ILabel(after_call)]
       @ [IMov(Reg(RSP), (stackloc 2))])

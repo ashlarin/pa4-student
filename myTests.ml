@@ -75,8 +75,13 @@ let myTestList =
     t "param3Mix" "(def test (x : Num y : Bool z : Num) : Bool true) (test 1 true 2)" "true";
     t "param2Mix2" "(def test (x : Bool y : Num) : Num 1) (test true 1)" "1";
     t "fib" "(def fibonacci (n : Num) : Num (if (< n 2) 1 (+ (fibonacci (- n 1)) (fibonacci (- n 2))))) (fibonacci 3)" "3";
-
-
+    t "remainder0" "(def remainder (x : Num y : Num) : Num (if (< (- x y) 1) (if (== x y) 0 x) (remainder (- x y) y))) (remainder 13 2)" "1";
+    t "remainder1" "(def remainder (x : Num y : Num) : Num (if (< (- x y) 1) (if (== x y) 0 x) (remainder (- x y) y))) (remainder 24 4)" "0";
+    t "prime" "(def remainder (x : Num y : Num) : Num (if (< (- x y) 1) (if (== x y) 0 x) (remainder (- x y) y))) (def isprime (y : Num) : Bool (let ((n 2)) (while (< n y) (if (== (remainder y n) 0) (set n 99999999) (set n (+ n 1)))) (if (== n 99999999) false true))) (isprime 3)" "true";
+    t "deepstack3" "(def func3 (n1 : Num) : Num (set n1 (- n1 1))) (func3 10)" "9";
+    t "deepstack2" "(def func2 (n1 : Num n2 : Num) : Num (while (< n1 (* n2 10)) (set n1 (* 2 n1)) (print n1)) (if (< (func3 n1) n2) n2 n1)) (def func3 (n1 : Num) : Num (set n1 (- n1 1))) (func2 3 7)" "6\n12\n24\n48\n96\n96";
+    t "deepstack1" "(def func1 (n1 : Num n2 : Num b1 : Bool ) : Num (if b1 (set n1 (func2 n1 (* n1 n2))) (set n1 (func2 n1 (+ n1 n2))))) (def func2 (n1 : Num n2 : Num) : Num (while (< n1 (* n2 10)) (set n1 (* 2 n1)) (print n1)) (if (< (func3 n1) n2) n2 n1)) (def func3 (n1 : Num) : Num (set n1 (- n1 1))) (func1 3 7 true)" "6\n12\n24\n48\n96\n192\n384\n384";
+    t "evenodd" "(def even (n : Num) : Bool (if (== n 0) true (odd (- n 1)))) (def odd (n : Num) : Bool (if (== n 0) false (even (- n 1)))) (def test() : Bool (print (even 30)) (print (odd 30)) (print (even 57)) (print (odd 57))) (test)" "true\nfalse\nfalse\ntrue\ntrue";
   ]
 ;;
 

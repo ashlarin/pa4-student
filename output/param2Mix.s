@@ -28,7 +28,7 @@ push rbx
   mov [rsp -16], rax
   mov rax, 0x2
   mov [rsp -24], rax
-  mov rbx, temp_after_call_22
+  mov rbx, temp_after_call_18
   mov [rsp -32], rbx
   mov [rsp -40], rsp
   mov rax, [rsp -16]
@@ -37,7 +37,7 @@ push rbx
   mov [rsp -56], rax
   sub rsp, 32
   jmp near test
-temp_after_call_22:
+temp_after_call_18:
   mov rsp, [rsp -16]
   mov [rsp -16], rax
   pop rbx
